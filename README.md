@@ -35,3 +35,21 @@ The same dedicated tool prefix also provides this actual browser/HTTP prerequisi
 qualification-browser-smoke
 
 It starts and closes a tiny real loopback HTTP page and sandbox-enabled Chromium, records actual process identities/launch argv and closure under ignored `.runtime/`, and reports the receipt path. It verifies the installed browser environment; it never supplies the application's behavior, design, API or passing acceptance.
+
+## Run Incident atlas
+
+From this checkout, run `npm run pretest` to prepare the read-only canonical data and pinned tooling, then `npm run start`. Open **http://127.0.0.1:3000**. The Node backend binds only to loopback. Press **Ctrl+C** in that terminal to close the server. No external services or accounts are used.
+
+Search matches literal text in IDs, titles, and descriptions, ignoring capitalization. Values within each filter are alternatives; separate filters apply together. Both opened-date endpoints include their whole UTC day. Defaults are newest first, 25 rows, and no filters. Sort ties use ascending incident ID. Severity descending means critical, high, medium, low. Summaries and daily counts cover every matching record, even across pages. Open an incident to read every field; Back preserves the table and page.
+
+Saved views stay in this browser's local storage and retain search, filters, sort, and page size. Open or delete them in the sidebar. CSV export includes all matching records in the current sort order, with every field; `tags` is a JSON array in a quoted CSV cell and unresolved `resolvedAt` is empty. Standard CSV quoting preserves commas, quotes, and multiline descriptions.
+
+For fresh verification, run these commands in order:
+
+```sh
+npm run pretest
+qualification-browser-smoke
+npm test
+```
+
+The unchanged Node test command discovers `test/explorer.test.mjs`. It compares actual HTTP results, summaries, date boundaries, ties, and parsed exports with expectations independently derived from the dataset. Real sandboxed Chromium exercises filters, sorting, page sizes, details, saved views across reload, keyboard focus, narrow screens, empty/loading/error states and retry. Backend request gates hold actual requests and destroy connections to verify obsolete query, details, and export completions cannot change the current screen or Retry. This includes an export followed by failing details, and late export success while details are pending, displayed, or closed. Tests close their loopback server and browser in finally blocks. Evidence and a mobile screenshot are kept only under ignored `.runtime/`.
